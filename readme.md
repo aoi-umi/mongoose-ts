@@ -1,8 +1,13 @@
 # mongoose-ts
 
+> npm i mongoose-ts-ua
+
 ## usage
 
 ``` ts
+import {
+    Model, getModelForClass, prop
+} from 'mongoose-ts-ua';
 export class Example extends Model<Example> {
     @prop()
     name?: string;
