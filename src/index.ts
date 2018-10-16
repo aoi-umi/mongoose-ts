@@ -13,7 +13,6 @@ export interface PropOptions<T> extends SchemaTypeOpts<T> {
 }
 
 export interface ArrayPropOptions extends PropOptions<any> {
-    items?: any;
 }
 
 export const SchemaKey = {
@@ -48,6 +47,9 @@ function getSchemaMetadata<T=any>(metadataKey: any, target: Object) {
 }
 
 const baseProp = (rawOptions, Type, target, key, isArray = false) => {
+    rawOptions = {
+        ...rawOptions,
+    }
     const isGetterSetter = Object.getOwnPropertyDescriptor(target, key);
     if (isGetterSetter && (isGetterSetter.get || isGetterSetter.set)) {
         defineSchemaMetadata((obj) => {
@@ -69,31 +71,23 @@ const baseProp = (rawOptions, Type, target, key, isArray = false) => {
         return;
     }
 
-    const options = _.omit(rawOptions, ['ref', 'items']);
+
+    const options = {
+        ...rawOptions
+    };
     defineSchemaMetadata((obj) => {
         if (isArray && Array.isArray(obj))
             obj = obj[0];
+        if (rawOptions.ref) {
+            options.ref = typeof rawOptions.ref === 'string' ? rawOptions.ref : rawOptions.ref.name;
+            options.Type = Schema.Types.ObjectId;
+        }
 
-        let hasOption = false;
-        for (let key in options) {
-            hasOption = true;
-            break;
+        obj = {
+            type: Type,
+            ...options
         }
-        if (hasOption) {
-            if (rawOptions.ref) {
-                options.ref = typeof rawOptions.ref === 'string' ? rawOptions.ref : rawOptions.ref.name;
-                Type = Schema.Types.ObjectId;
-            }
-            obj = {
-                ...options,
-                type: Type
-            }
-        } else {
-            obj = {
-                ...options,
-                type: Type
-            }
-        }
+
         if (isArray) {
             obj = [obj];
         }

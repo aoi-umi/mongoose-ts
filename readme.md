@@ -72,7 +72,7 @@ method1, user1
 method1, user1
 //User2
 this is method1,save
----------------------    
+---------------------
 //is a new schema
 TUser2 no method1
 ---------------------
