@@ -219,6 +219,11 @@ export class Model<T>  {
     updatedAt?: Date;
 }
 
+export let config: {
+    existingMongoose?: mongoose.Mongoose;
+    existingConnection?: mongoose.Connection;
+} = {};
+
 //#region getModelForClass 
 export interface GetModelForClassOptions {
     existingMongoose?: mongoose.Mongoose;
@@ -237,6 +242,8 @@ export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
     }: GetModelForClassOptions = {}) {
     let schema = Reflect.getMetadata(SchemaKey.schema, t);
     let model: typeof mongoose.model = mongoose.model.bind(mongoose);
+    existingConnection = existingConnection || config.existingConnection;
+    existingMongoose = existingMongoose || config.existingMongoose;
     if (existingConnection) {
         model = existingConnection.model.bind(existingConnection);
     } else if (existingMongoose) {

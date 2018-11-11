@@ -15,7 +15,7 @@ function lastModifiedPlugin(schema: Schema) {
 
 export type UserInstanceType = InstanceType<User>;
 export type UserModelType = ModelType<User, typeof User>;
-export type UserDocType = DocType<UserInstanceType, { method1: any }>;//exclude method1
+export type UserDocType = DocType<UserInstanceType, { method1 }>;//omit method1
 
 @setSchema({
     schemaOptions: {
