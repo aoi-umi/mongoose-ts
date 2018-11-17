@@ -1,7 +1,10 @@
-import { connect } from "mongoose";
-import { UserModel, User } from "./usage";
+
+import * as mongoose from "mongoose";
+import { connect, createConnection } from "mongoose";
+import { UserModel } from "./usage";
 import { User1Model, User2Model, TUser1Model, TUser2Model } from "./diffBetweenTypegoose";
 import { getSchema } from "..";
+
 
 async function example1() {
     const u = new UserModel({ name: 'mongoose-ts' } /*,true *//*just for type*/);

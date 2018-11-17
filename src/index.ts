@@ -205,11 +205,11 @@ export let getSchema = function (model: any) {
 type DefaultInstance = mongoose.Document;
 export declare type InstanceType<T> = T & mongoose.Document;
 export declare type ModelType<T, typeofT> = mongoose.Model<InstanceType<T>> & typeofT;
-export declare type DocType<T extends DefaultInstance> = FilteredModelAttributes<T>;
+export declare type DocType<T extends DefaultInstance, U = {}> = FilteredModelAttributes<T & U, U>;
 export declare type Ref<T> = T | Types.ObjectId;
 
-export type FilteredModelAttributes<T extends DefaultInstance> =
-    RecursivePartial<Omit<T, keyof DefaultInstance>> & {
+export type FilteredModelAttributes<T extends DefaultInstance & U, U> =
+    RecursivePartial<Omit<T, keyof (DefaultInstance & U)>> & {
         _id: Types.ObjectId;
     };
 
@@ -222,6 +222,11 @@ export class Model<T>  {
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+export let config: {
+    existingMongoose?: mongoose.Mongoose;
+    existingConnection?: mongoose.Connection;
+} = {};
 
 //#region getModelForClass 
 export interface GetModelForClassOptions {
@@ -241,6 +246,8 @@ export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
     }: GetModelForClassOptions = {}) {
     let schema = Reflect.getMetadata(SchemaKey.schema, t);
     let model: typeof mongoose.model = mongoose.model.bind(mongoose);
+    existingConnection = existingConnection || config.existingConnection;
+    existingMongoose = existingMongoose || config.existingMongoose;
     if (existingConnection) {
         model = existingConnection.model.bind(existingConnection);
     } else if (existingMongoose) {
