@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import * as mongoose from 'mongoose';
 import { Types, Mongoose, ConnectionOptions, SchemaTypeOpts, Schema, SchemaType, SchemaOptions } from 'mongoose';
-import * as _ from 'lodash';
 import { Omit, RecursivePartial } from './types';
 
 import * as hooks from './hooks';
@@ -195,6 +194,11 @@ export let setSchema = function (options: { schemaOptions?: SchemaOptions } = {}
         //#endregion        
         Reflect.defineMetadata(SchemaKey.schema, schema, target);
     }
+}
+
+export let getSchema = function (model: any) {
+    let schema = Reflect.getMetadata(SchemaKey.schema, model);
+    return schema;
 }
 //#endregion
 

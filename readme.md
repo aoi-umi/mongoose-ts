@@ -15,6 +15,12 @@ export class Example extends Model<Example> {
 export const ExampleModel = getModelForClass<Example, typeof Example>(Example);
 
 ```
+## 2018-11-17
+### you can get schema by getSchema
+
+> getSchema(Example);
+
+## example
 
 > model define in src/test/usage.ts
 
