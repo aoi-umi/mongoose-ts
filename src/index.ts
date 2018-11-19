@@ -62,7 +62,7 @@ const baseProp = (rawOptions, Type, target, key, isArray = false) => {
             if (isGetterSetter.set) {
                 obj = {
                     ...obj,
-                    get: isGetterSetter.set
+                    set: isGetterSetter.set
                 }
             }
             return obj;

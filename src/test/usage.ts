@@ -41,6 +41,9 @@ export class User extends Model<User> {
     get virtualName() {
         return 'virtual-' + this.name;
     }
+    set virtualName(v) {
+        
+    }
 
     @setMethod
     method1() {

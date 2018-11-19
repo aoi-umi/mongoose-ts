@@ -1,7 +1,7 @@
 
 import * as mongoose from "mongoose";
 import { connect, createConnection } from "mongoose";
-import { UserModel } from "./usage";
+import { UserModel, User } from "./usage";
 import { User1Model, User2Model, TUser1Model, TUser2Model } from "./diffBetweenTypegoose";
 import { getSchema } from "..";
 
@@ -68,6 +68,8 @@ async function example2() {
 
 (async () => {
     connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
-    await example2();
+    let schema = getSchema(User);
+    console.log(new UserModel());
+    //await example2();
     //console.log(getSchema(User));
 })();
