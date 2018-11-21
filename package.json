@@ -1,10 +1,11 @@
 {
     "name": "mongoose-ts-ua",
-    "version": "0.2.1",
+    "version": "0.3.1",
     "description": "mongoose with typescript",
     "main": "dest/index.js",
     "files": [
-        "dest"
+        "dest/index.js",
+        "dest/lib"
     ],
     "scripts": {
         "build": "rm -rf ./dest && tsc",

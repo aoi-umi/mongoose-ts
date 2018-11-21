@@ -3,7 +3,7 @@ import {
     Model, getModelForClass, ModelType, DocType, InstanceType, Ref,
     setSchema, prop, arrayProp, setMethod, setStatic,
     setPre, setPost, setPlugin
-} from '..';
+} from '../lib';
 
 function lastModifiedPlugin(schema: Schema) {
     schema.add({ lastMod: Date });

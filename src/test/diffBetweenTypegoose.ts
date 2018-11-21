@@ -4,7 +4,7 @@ import {
     Model, getModelForClass, ModelType, DocType, InstanceType, Ref,
     setSchema, prop, arrayProp, setMethod, setStatic,
     setPre, setPost, setPlugin
-} from '..';
+} from '../lib';
 import { User, UserModel } from "./usage";
 
 
