@@ -6,11 +6,19 @@
 
 ``` ts
 import {
-    Model, getModelForClass, prop
+    Model, getModelForClass, prop, setSchema
 } from 'mongoose-ts-ua';
+import { Types } from 'mongoose';
+
+@setSchema()
 export class Example extends Model<Example> {
     @prop()
     name?: string;
+
+    @arrayProp({
+        type: String
+    })
+    list?: string[];//or Types.DocumentArray<string>;
 }
 export const ExampleModel = getModelForClass<Example, typeof Example>(Example);
 

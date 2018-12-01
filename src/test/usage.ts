@@ -42,21 +42,18 @@ export class User extends Model<User> {
         return 'virtual-' + this.name;
     }
     set virtualName(v) {
-        
+
     }
 
     @setMethod
     method1() {
-        let self = this as any as UserInstanceType;
-        console.log('this is method1,' + (self.save ? '' : 'no ') + 'save');
+        console.log('this is method1,' + (this.save ? '' : 'no ') + 'save');
     }
 
     @setStatic
-    static static1() {
-        let self = this as UserModelType;
-        console.log('this is static1,' + (self.findOne ? '' : 'no ') + 'findOne');
+    static async static1() {
+        console.log('this is static1,' + (this.findOne ? '' : 'no ') + 'findOne');
     }
 }
 
 export const UserModel = getModelForClass<User, typeof User>(User);
-

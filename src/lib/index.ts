@@ -215,12 +215,17 @@ export type FilteredModelAttributes<T extends DefaultInstance & U, U> =
 
 declare module "mongoose" {
     interface Document {
-        _doc: DocType<this>;
+        _doc: DocType<this, any>;
     }
 }
-export class Model<T>  {
+interface Document<T> extends mongoose.Model<InstanceType<T>> {
+}
+declare var _Model1: <T>(t?: T) => Document<T>;
+exports.Model = class { };
+export declare class Model<T, DocOmit={}> extends _Model1() {
     createdAt?: Date;
     updatedAt?: Date;
+    _doc: DocType<InstanceType<T>, DocOmit>;
 }
 
 export let config: {
