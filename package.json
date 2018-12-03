@@ -16,7 +16,9 @@
     "license": "ISC",
     "dependencies": {},
     "devDependencies": {
-        "@types/mongoose": "^5.2.19"
+        "@types/mongoose": "^5.2.19",
+        "reflect-metadata": "^0.1.12",
+        "typegoose": "^5.4.1"
     },
     "peerDependencies": {
         "mongoose": "^5.2.12",
@@ -29,8 +31,5 @@
     "keywords": [
         "mongoose",
         "typescript"
-    ],
-    "optionalDependencies": {
-        "typegoose": "^5.4.1"
-    }
+    ]
 }

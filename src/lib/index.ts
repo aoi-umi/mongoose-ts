@@ -206,6 +206,7 @@ type DefaultInstance = mongoose.Document;
 export declare type InstanceType<T> = T & mongoose.Document;
 export declare type ModelType<T, typeofT> = mongoose.Model<InstanceType<T>> & typeofT;
 export declare type DocType<T extends DefaultInstance, U = {}> = FilteredModelAttributes<T & U, U>;
+export declare type DocType2<T, U = {}> = FilteredModelAttributes<InstanceType<T> & U, U>;
 export declare type Ref<T> = T | Types.ObjectId;
 
 export type FilteredModelAttributes<T extends DefaultInstance & U, U> =
@@ -218,9 +219,9 @@ declare module "mongoose" {
         _doc: DocType<this, any>;
     }
 }
-interface Document<T> extends mongoose.Model<InstanceType<T>> {
+interface _Model<T> extends mongoose.Model<InstanceType<T>> {
 }
-declare var _Model1: <T>(t?: T) => Document<T>;
+declare var _Model1: <T>(t?: T) => _Model<T>;
 exports.Model = class { };
 export declare class Model<T, DocOmit={}> extends _Model1() {
     createdAt?: Date;
