@@ -206,12 +206,18 @@ type DefaultInstance = mongoose.Document;
 export declare type InstanceType<T> = T & mongoose.Document;
 export declare type ModelType<T, typeofT> = mongoose.Model<InstanceType<T>> & typeofT;
 export declare type DocType<T extends DefaultInstance, U = {}> = FilteredModelAttributes<T & U, U>;
-export declare type DocType2<T, U = {}> = FilteredModelAttributes<InstanceType<T> & U, U>;
+export declare type SubDocType<T> = Types.Subdocument & T;
 export declare type Ref<T> = T | Types.ObjectId;
+export declare type ModelArgsType<T extends DefaultInstance, U = {}> = FilteredModelAttributesArgs<T & U, U>;
 
 export type FilteredModelAttributes<T extends DefaultInstance & U, U> =
     Partial<Omit<T, keyof (DefaultInstance & U)>> & {
-        _id: Types.ObjectId;
+        _id?: Types.ObjectId;
+    };
+
+export type FilteredModelAttributesArgs<T extends DefaultInstance & U, U> =
+    RecursivePartial<Omit<T, keyof (DefaultInstance & U)>> & {
+        _id?: Types.ObjectId;
     };
 
 declare module "mongoose" {
@@ -268,7 +274,7 @@ export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
         & typeofT
         & {
             //doc with type
-            new(doc?: RecursivePartial<T>, type?: Boolean): InstanceType<T>
+            new(doc?: ModelArgsType<T>, type?: Boolean): InstanceType<T>
         };
 }
 //#endregion

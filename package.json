@@ -1,6 +1,6 @@
 {
     "name": "mongoose-ts-ua",
-    "version": "0.4.1",
+    "version": "0.5.0",
     "description": "mongoose with typescript",
     "main": "dest/index.js",
     "files": [

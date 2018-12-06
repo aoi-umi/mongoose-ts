@@ -6,7 +6,8 @@
 
 ``` ts
 import {
-    Model, getModelForClass, prop, setSchema
+    Model, getModelForClass, prop, setSchema, arrayProp,
+    SubDocType
 } from 'mongoose-ts-ua';
 import { Types } from 'mongoose';
 
@@ -18,7 +19,7 @@ export class Example extends Model<Example> {
     @arrayProp({
         type: String
     })
-    list?: string[];//or Types.DocumentArray<string>;
+    list?: Types.DocumentArray<SubDocType<string>>;//or string[]
 }
 export const ExampleModel = getModelForClass<Example, typeof Example>(Example);
 
