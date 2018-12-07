@@ -196,8 +196,8 @@ export let setSchema = function (options: { schemaOptions?: SchemaOptions } = {}
     }
 }
 
-export let getSchema = function (model: any) {
-    let schema = Reflect.getMetadata(SchemaKey.schema, model);
+export let getSchema = function <TFunction extends Function>(model: TFunction) {
+    let schema: Schema = Reflect.getMetadata(SchemaKey.schema, model);
     return schema;
 }
 //#endregion
