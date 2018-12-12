@@ -24,7 +24,6 @@ export class Example extends Model<Example> {
 export const ExampleModel = getModelForClass<Example, typeof Example>(Example);
 
 ```
-## 2018-11-17
 ### you can get schema by getSchema
 
 > getSchema(Example);
@@ -64,35 +63,41 @@ this is static1,findOne
 > model define in src/test/diffBetweenTypegoose.ts
 
 ``` ts
-new TUser1Model().method1();
-let tu2 = new TUser2Model({ child: { name: 'tu1' } });
-tu2.method1();
-console.log('---------------------');
-new User1Model().method1();
-let u2 = new User2Model({ child: { name: 'u1' } }, true);
-u2.method1();
-console.log('---------------------');
-console.log('TUser2', (tu2.child.method1 ? '' : 'no ') + 'method1');
-tu2.child.method1 && tu2.child.method1();
-console.log('---------------------');
-console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
-u2.child.method1 && u2.child.method1();
-/*output
-//TUser1
-method1, user1
-//TUser2 !!!!
-method1, user1
----------------------
-//User1
-method1, user1
-//User2
-this is method1,save
----------------------
-//is a new schema
-TUser2 no method1
----------------------
-//schema user
-User2 method1
-method1, user1
-*/
+    console.log('TUser1');
+    new TUser1Model().method1();
+    console.log('User1');
+    new User1Model().method1();
+    console.log('---------------------');
+    let tu2 = new TUser2Model({ child: { name: 'tu1' } });
+    let u2 = new User2Model({ child: { name: 'u1' } }, true);    
+    console.log('TUser2');
+    tu2.method1();
+    console.log('User2');
+    u2.method1();
+    console.log('---------------------');
+    console.log('TUser2', (tu2.child.method1 ? '' : 'no ') + 'method1');
+    console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
+    console.log('---------------------');
+    console.log('TUser2');
+    tu2.child.method1 && tu2.child.method1();
+    console.log('User2');
+    u2.child.method1 && u2.child.method1();
+    /*output
+    TUser1
+    method1, user1
+    User1
+    method1, user1
+    ---------------------
+    TUser2
+    method1, user1
+    User2
+    this is method1,save
+    ---------------------
+    TUser2 no method1
+    User2 method1
+    ---------------------
+    TUser2
+    User2
+    method1, user1
+    */
 ```
