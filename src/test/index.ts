@@ -46,11 +46,8 @@ async function example2() {
     u2.method1();
     console.log('---------------------');
     console.log('TUser2', (tu2.child.method1 ? '' : 'no ') + 'method1');
-    console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
-    console.log('---------------------');
-    console.log('TUser2');
     tu2.child.method1 && tu2.child.method1();
-    console.log('User2');
+    console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
     u2.child.method1 && u2.child.method1();
     /*output
     TUser1
@@ -65,9 +62,6 @@ async function example2() {
     ---------------------
     TUser2 no method1
     User2 method1
-    ---------------------
-    TUser2
-    User2
     method1, user1
     */
 }
