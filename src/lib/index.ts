@@ -210,15 +210,15 @@ export declare type SubDocType<T> = Types.Subdocument & T;
 export declare type Ref<T> = T | Types.ObjectId;
 export declare type ModelArgsType<T extends DefaultInstance, U = {}> = FilteredModelAttributesArgs<T & U, U>;
 
+type BaseDoc = {
+    _id?: Types.ObjectId;
+    id?: string;
+}
 export type FilteredModelAttributes<T extends DefaultInstance & U, U> =
-    Partial<Omit<T, keyof (DefaultInstance & U)>> & {
-        _id?: Types.ObjectId;
-    };
+    Partial<Omit<T, keyof (DefaultInstance & U)>> & BaseDoc;
 
 export type FilteredModelAttributesArgs<T extends DefaultInstance & U, U> =
-    RecursivePartial<Omit<T, keyof (DefaultInstance & U)>> & {
-        _id?: Types.ObjectId;
-    };
+    RecursivePartial<Omit<T, keyof (DefaultInstance & U)>> & BaseDoc;
 
 declare module "mongoose" {
     interface Document {

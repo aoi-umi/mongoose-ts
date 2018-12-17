@@ -1,10 +1,20 @@
 import {
     Model, getModelForClass, prop, setSchema, arrayProp,
-    SubDocType
+    SubDocType, InstanceType
 } from '..';
 import { Types } from 'mongoose';
+import { setMethod, setStatic } from '../lib';
 
-@setSchema()
+type ExampleInstanceType = InstanceType<Example>;
+@setSchema({
+    schemaOptions: {
+        toJSON: {
+            transform: (doc: ExampleInstanceType, ret) => {
+                return ret;
+            }
+        }
+    }
+})
 export class Example extends Model<Example> {
     @prop()
     name?: string;
@@ -13,5 +23,15 @@ export class Example extends Model<Example> {
         type: String
     })
     list?: Types.DocumentArray<SubDocType<string>>;//or string[]
+
+    @setMethod
+    saveTest() {
+        return this.save();
+    }
+
+    @setStatic
+    static findOneTest() {
+        return this.findOne();
+    }
 }
 export const ExampleModel = getModelForClass<Example, typeof Example>(Example);

@@ -24,6 +24,16 @@ export class Example extends Model<Example> {
 export const ExampleModel = getModelForClass<Example, typeof Example>(Example);
 
 ```
+
+![InstanceType](https://raw.githubusercontent.com/aoi-umi/note/master/git%E6%96%87%E6%A1%A3/mongoose-ts/example1.png)
+
+>method
+
+![method](https://raw.githubusercontent.com/aoi-umi/note/master/git%E6%96%87%E6%A1%A3/mongoose-ts/example2.png)
+
+>static
+
+![static](https://raw.githubusercontent.com/aoi-umi/note/master/git%E6%96%87%E6%A1%A3/mongoose-ts/example3.png)
 ### you can get schema by getSchema
 
 > getSchema(Example);
