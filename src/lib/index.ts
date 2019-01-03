@@ -146,6 +146,12 @@ export let setSchema = function (options: { schemaOptions?: SchemaOptions } = {}
             ...options
         };
         let { schemaOptions } = options;
+        if (config.schemaOptions) {
+            schemaOptions = {
+                ...config.schemaOptions,
+                ...schemaOptions,
+            }
+        }
         //#endregion
 
         let schema = new Schema(props, schemaOptions);
@@ -238,6 +244,7 @@ export declare class Model<T, DocOmit={}> extends _Model1() {
 export let config: {
     existingMongoose?: mongoose.Mongoose;
     existingConnection?: mongoose.Connection;
+    schemaOptions?: SchemaOptions;
 } = {};
 
 //#region getModelForClass 
