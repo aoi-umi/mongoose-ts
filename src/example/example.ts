@@ -1,9 +1,8 @@
-import {
-    Model, getModelForClass, prop, setSchema, arrayProp,
-    SubDocType, InstanceType
-} from '..';
 import { Types } from 'mongoose';
-import { setMethod, setStatic } from '../lib';
+import {
+    Model, getModelForClass, prop, setSchema, arrayProp, setMethod, setStatic,
+    SubDocType, InstanceType
+} from '../lib'
 
 type ExampleInstanceType = InstanceType<Example>;
 @setSchema({
