@@ -7,9 +7,17 @@
 ``` ts
 import {
     Model, getModelForClass, prop, setSchema, arrayProp,
-    SubDocType
+    SubDocType, config
 } from 'mongoose-ts-ua';
 import { Types } from 'mongoose';
+
+/**
+ * custom toCollectionName
+ * When no collection argument is passed, mongoose will pluralizes the name, you can config this to declared it
+*/
+config.toCollectionName = (modelName) => {
+    return modelName;
+};
 
 @setSchema()
 export class Example extends Model<Example> {

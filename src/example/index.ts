@@ -1,10 +1,13 @@
 
 import * as mongoose from "mongoose";
 import { connect, createConnection } from "mongoose";
+import { getSchema, config } from "../lib";
+config.toCollectionName = (modelName) => {
+    return modelName;
+};
+
 import { UserModel, User } from "./usage";
 import { User1Model, User2Model, TUser1Model, TUser2Model } from "./diffBetweenTypegoose";
-import { getSchema } from "../lib";
-
 
 async function example1() {
     const u = new UserModel({ name: 'mongoose-ts' } /*,true *//*just for type*/);
@@ -39,7 +42,7 @@ async function example2() {
     new User1Model().method1();
     console.log('---------------------');
     let tu2 = new TUser2Model({ child: { name: 'tu1' } });
-    let u2 = new User2Model({ child: { name: 'u1' } }, true);    
+    let u2 = new User2Model({ child: { name: 'u1' } }, true);
     console.log('TUser2');
     tu2.method1();
     console.log('User2');
@@ -70,6 +73,6 @@ async function example2() {
     connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
     //let schema = getSchema(User);
     //console.log(new UserModel());
-    await example2();
+    await example1();
     //console.log(getSchema(User));
 })();
