@@ -9,9 +9,18 @@
 
 ``` ts
 import {
-    Model, getModelForClass, prop, setSchema
+    Model, getModelForClass, prop, setSchema, arrayProp,
+    SubDocType, config
 } from 'mongoose-ts-ua';
 import { Types } from 'mongoose';
+
+/**
+ * custom toCollectionName
+ * When no collection argument is passed, mongoose will pluralizes the name, you can config this to declared it
+*/
+config.toCollectionName = (modelName) => {
+    return modelName;
+};
 
 @setSchema()
 export class Example extends Model<Example> {
@@ -21,12 +30,21 @@ export class Example extends Model<Example> {
     @arrayProp({
         type: String
     })
-    list?: string[];//or Types.DocumentArray<string>;
+    list?: Types.DocumentArray<SubDocType<string>>;//or string[]
 }
 export const ExampleModel = getModelForClass<Example, typeof Example>(Example);
 
 ```
-## 2018-11-17
+
+![InstanceType](https://raw.githubusercontent.com/aoi-umi/note/master/git%E6%96%87%E6%A1%A3/mongoose-ts/example1.png)
+
+>method
+
+![method](https://raw.githubusercontent.com/aoi-umi/note/master/git%E6%96%87%E6%A1%A3/mongoose-ts/example2.png)
+
+>static
+
+![static](https://raw.githubusercontent.com/aoi-umi/note/master/git%E6%96%87%E6%A1%A3/mongoose-ts/example3.png)
 ### you can get schema by getSchema
 
 > getSchema(Example);
@@ -66,35 +84,35 @@ this is static1,findOne
 > model define in src/test/diffBetweenTypegoose.ts
 
 ``` ts
-new TUser1Model().method1();
-let tu2 = new TUser2Model({ child: { name: 'tu1' } });
-tu2.method1();
-console.log('---------------------');
-new User1Model().method1();
-let u2 = new User2Model({ child: { name: 'u1' } }, true);
-u2.method1();
-console.log('---------------------');
-console.log('TUser2', (tu2.child.method1 ? '' : 'no ') + 'method1');
-tu2.child.method1 && tu2.child.method1();
-console.log('---------------------');
-console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
-u2.child.method1 && u2.child.method1();
-/*output
-//TUser1
-method1, user1
-//TUser2 !!!!
-method1, user1
----------------------
-//User1
-method1, user1
-//User2
-this is method1,save
----------------------
-//is a new schema
-TUser2 no method1
----------------------
-//schema user
-User2 method1
-method1, user1
-*/
+    console.log('TUser1');
+    new TUser1Model().method1();
+    console.log('User1');
+    new User1Model().method1();
+    console.log('---------------------');
+    let tu2 = new TUser2Model({ child: { name: 'tu1' } });
+    let u2 = new User2Model({ child: { name: 'u1' } }, true);    
+    console.log('TUser2');
+    tu2.method1();
+    console.log('User2');
+    u2.method1();
+    console.log('---------------------');
+    console.log('TUser2', (tu2.child.method1 ? '' : 'no ') + 'method1');
+    tu2.child.method1 && tu2.child.method1();
+    console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
+    u2.child.method1 && u2.child.method1();
+    /*output
+    TUser1
+    method1, user1
+    User1
+    method1, user1
+    ---------------------
+    TUser2
+    method1, user1
+    User2
+    this is method1,save
+    ---------------------
+    TUser2 no method1
+    User2 method1
+    method1, user1
+    */
 ```

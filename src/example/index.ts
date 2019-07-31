@@ -1,10 +1,13 @@
 
 import * as mongoose from "mongoose";
 import { connect, createConnection } from "mongoose";
+import { getSchema, config } from "../lib";
+config.toCollectionName = (modelName) => {
+    return modelName;
+};
+
 import { UserModel, User } from "./usage";
 import { User1Model, User2Model, TUser1Model, TUser2Model } from "./diffBetweenTypegoose";
-import { getSchema } from "../lib";
-
 
 async function example1() {
     const u = new UserModel({ name: 'mongoose-ts' } /*,true *//*just for type*/);
@@ -33,34 +36,34 @@ async function example1() {
 }
 
 async function example2() {
+    console.log('TUser1');
     new TUser1Model().method1();
-    let tu2 = new TUser2Model({ child: { name: 'tu1' } });
-    tu2.method1();
-    console.log('---------------------');
+    console.log('User1');
     new User1Model().method1();
+    console.log('---------------------');
+    let tu2 = new TUser2Model({ child: { name: 'tu1' } });
     let u2 = new User2Model({ child: { name: 'u1' } }, true);
+    console.log('TUser2');
+    tu2.method1();
+    console.log('User2');
     u2.method1();
     console.log('---------------------');
     console.log('TUser2', (tu2.child.method1 ? '' : 'no ') + 'method1');
     tu2.child.method1 && tu2.child.method1();
-    console.log('---------------------');
     console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
     u2.child.method1 && u2.child.method1();
     /*output
-    //TUser1
+    TUser1
     method1, user1
-    //TUser2 !!!!
+    User1
     method1, user1
     ---------------------
-    //User1
+    TUser2
     method1, user1
-    //User2
+    User2
     this is method1,save
-    ---------------------    
-    //is a new schema
-    TUser2 no method1
     ---------------------
-    //schema user
+    TUser2 no method1
     User2 method1
     method1, user1
     */
@@ -68,8 +71,8 @@ async function example2() {
 
 (async () => {
     connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
-    let schema = getSchema(User);
-    console.log(new UserModel());
-    //await example2();
+    //let schema = getSchema(User);
+    //console.log(new UserModel());
+    await example1();
     //console.log(getSchema(User));
 })();

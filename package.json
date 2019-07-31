@@ -1,11 +1,9 @@
 {
     "name": "mongoose-ts-ua",
-    "version": "0.4.1",
+    "version": "1.1.2",
     "description": "mongoose with typescript",
-    "main": "dest/index.js",
+    "main": "dest/lib/index.js",
     "files": [
-        "dest/index.js",
-        "dest/index.d.ts",
         "dest/lib"
     ],
     "scripts": {
@@ -16,7 +14,9 @@
     "license": "ISC",
     "dependencies": {},
     "devDependencies": {
-        "@types/mongoose": "^5.2.19"
+        "@types/mongoose": "^5.2.19",
+        "reflect-metadata": "^0.1.12",
+        "typegoose": "^5.4.1"
     },
     "peerDependencies": {
         "mongoose": "^5.2.12",
@@ -29,8 +29,5 @@
     "keywords": [
         "mongoose",
         "typescript"
-    ],
-    "optionalDependencies": {
-        "typegoose": "^5.4.1"
-    }
+    ]
 }

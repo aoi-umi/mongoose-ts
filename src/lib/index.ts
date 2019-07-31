@@ -34,7 +34,7 @@ export function defineSchemaMetadata(fn: (obj) => any, metadataKey: any, target:
     Reflect.defineMetadata(metadataKey, obj, target, propertyKey);
 }
 
-function getSchemaMetadata<T=any>(metadataKey: any, target: Object) {
+function getSchemaMetadata<T = any>(metadataKey: any, target: Object) {
     let dict = Reflect.getMetadata(metadataKey, target) || {};
     let returnObj: {
         [key: string]: T
@@ -146,6 +146,12 @@ export let setSchema = function (options: { schemaOptions?: SchemaOptions } = {}
             ...options
         };
         let { schemaOptions } = options;
+        if (config.schemaOptions) {
+            schemaOptions = {
+                ...config.schemaOptions,
+                ...schemaOptions,
+            }
+        }
         //#endregion
 
         let schema = new Schema(props, schemaOptions);
@@ -196,8 +202,8 @@ export let setSchema = function (options: { schemaOptions?: SchemaOptions } = {}
     }
 }
 
-export let getSchema = function (model: any) {
-    let schema = Reflect.getMetadata(SchemaKey.schema, model);
+export let getSchema = function <TFunction extends Function>(model: TFunction) {
+    let schema: Schema = Reflect.getMetadata(SchemaKey.schema, model);
     return schema;
 }
 //#endregion
@@ -206,23 +212,30 @@ type DefaultInstance = mongoose.Document;
 export declare type InstanceType<T> = T & mongoose.Document;
 export declare type ModelType<T, typeofT> = mongoose.Model<InstanceType<T>> & typeofT;
 export declare type DocType<T extends DefaultInstance, U = {}> = FilteredModelAttributes<T & U, U>;
+export declare type SubDocType<T> = Types.Subdocument & T;
 export declare type Ref<T> = T | Types.ObjectId;
+export declare type ModelArgsType<T extends DefaultInstance, U = {}> = FilteredModelAttributesArgs<T & U, U>;
 
+type BaseDoc = {
+    _id?: Types.ObjectId;
+    id?: string;
+}
 export type FilteredModelAttributes<T extends DefaultInstance & U, U> =
-    Partial<Omit<T, keyof (DefaultInstance & U)>> & {
-        _id: Types.ObjectId;
-    };
+    Partial<Omit<T, keyof (DefaultInstance & U)>> & BaseDoc;
+
+export type FilteredModelAttributesArgs<T extends DefaultInstance & U, U> =
+    RecursivePartial<Omit<T, keyof (DefaultInstance & U)>> & BaseDoc;
 
 declare module "mongoose" {
     interface Document {
         _doc: DocType<this, any>;
     }
 }
-interface Document<T> extends mongoose.Model<InstanceType<T>> {
+interface _Model<T> extends mongoose.Model<InstanceType<T>> {
 }
-declare var _Model1: <T>(t?: T) => Document<T>;
+declare var _Model1: <T>(t?: T) => _Model<T>;
 exports.Model = class { };
-export declare class Model<T, DocOmit={}> extends _Model1() {
+export declare class Model<T, DocOmit = {}> extends _Model1() {
     createdAt?: Date;
     updatedAt?: Date;
     _doc: DocType<InstanceType<T>, DocOmit>;
@@ -231,6 +244,8 @@ export declare class Model<T, DocOmit={}> extends _Model1() {
 export let config: {
     existingMongoose?: mongoose.Mongoose;
     existingConnection?: mongoose.Connection;
+    schemaOptions?: SchemaOptions;
+    toCollectionName?: (modelName: string) => string;
 } = {};
 
 //#region getModelForClass 
@@ -249,7 +264,7 @@ export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
         existingConnection,
         modelOptions
     }: GetModelForClassOptions = {}) {
-    let schema = Reflect.getMetadata(SchemaKey.schema, t);
+    let schema: Schema = Reflect.getMetadata(SchemaKey.schema, t);
     let model: typeof mongoose.model = mongoose.model.bind(mongoose);
     existingConnection = existingConnection || config.existingConnection;
     existingMongoose = existingMongoose || config.existingMongoose;
@@ -262,12 +277,24 @@ export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
         ...modelOptions
     }
     let name = modelOptions.name || t.name;
-    return model(name, schema, modelOptions.collection, modelOptions.skipInit) as
+    let collection = modelOptions.collection;
+    if (!collection) {
+        let schColl = schema.get('collection');
+        if (schColl)
+            collection = schColl;
+    }
+
+    if (!collection && config.toCollectionName) {
+        let newColl = config.toCollectionName(name);
+        if (newColl)
+            collection = newColl;
+    }
+    return model(name, schema, collection, modelOptions.skipInit) as
         & mongoose.Model<InstanceType<T>>
         & typeofT
         & {
             //doc with type
-            new(doc?: RecursivePartial<T>, type?: Boolean): InstanceType<T>
+            new(doc?: ModelArgsType<T>, type?: Boolean): InstanceType<T>
         };
 }
 //#endregion
