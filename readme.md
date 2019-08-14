@@ -1,6 +1,9 @@
 # mongoose-ts
 
-> npm i mongoose-ts-ua
+# Install
+> npm i mongoose-ts-ua -S  
+> npm i reflect-metadata mongoose -S  
+> npm i @types/mongoose -D  
 
 ## usage
 
