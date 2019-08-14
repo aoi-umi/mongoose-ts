@@ -1,7 +1,9 @@
 
 import * as mongoose from "mongoose";
 import { connect, createConnection } from "mongoose";
-import { getSchema, config } from "../lib";
+import * as fs from 'fs';
+import * as path from 'path';
+import { getSchema, config, setSchema, getModelForClass, prop, GridFSFile, getGridFSModel } from "../lib";
 config.toCollectionName = (modelName) => {
     return modelName;
 };
@@ -9,7 +11,7 @@ config.toCollectionName = (modelName) => {
 import { UserModel, User } from "./usage";
 import { User1Model, User2Model, TUser1Model, TUser2Model } from "./diffBetweenTypegoose";
 
-async function example1() {
+async function exampleUsage() {
     const u = new UserModel({ name: 'mongoose-ts' } /*,true *//*just for type*/);
     await u.save();
     const user = await UserModel.findOne().sort({ _id: -1 });
@@ -69,10 +71,48 @@ async function example2() {
     */
 }
 
+
+async function exampleGrifFS() {
+    @setSchema()
+    class MyFile extends GridFSFile {
+        @prop({
+            default: Date.now
+        })
+        myprop: Date;
+    }
+
+    let FileModel = getGridFSModel({
+        schema: MyFile,
+        modelOptions: { collection: 'files' }
+    });
+    let filename = 'index.js';
+    let buffer = fs.readFileSync(path.resolve(__dirname, './' + filename))
+    let rs = new FileModel({
+        filename
+    });
+    /** 
+     * it will calculate the md5 before upload,
+     * if exists, will use that file's _id
+     */
+    let upload = await rs.upload({
+        buffer
+    });
+
+    console.log(upload);
+
+    let detail = await FileModel.findById(upload._id);
+    let download = await detail.download({ returnStream: false });
+    console.log(download);
+
+    //find from fs.files
+    let fileByMd5 = await FileModel.rawFindOne({ md5: download.raw.md5 });
+    console.log(fileByMd5);
+}
+
 (async () => {
-    connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
+    await connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
     //let schema = getSchema(User);
     //console.log(new UserModel());
-    await example1();
+    await exampleGrifFS();
     //console.log(getSchema(User));
 })();

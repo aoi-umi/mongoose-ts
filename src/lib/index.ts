@@ -298,3 +298,5 @@ export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
         };
 }
 //#endregion
+
+export * from './gridfs';
