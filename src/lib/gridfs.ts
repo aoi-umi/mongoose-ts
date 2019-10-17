@@ -104,6 +104,12 @@ export class GridFSFile extends Model<GridFSFile>{
     gridfs: GridFS;
 
     @setStatic
+    static async rawFind(cond: any) {
+        let file = await this.gridfs.find(cond);
+        return file;
+    }
+
+    @setStatic
     static async rawFindOne(cond: any) {
         let file = await this.gridfs.findOne(cond);
         return file;
