@@ -9,7 +9,6 @@
             "es2018",
         ],
         /* Specify library files to be included in the compilation:  */
-        "rootDir": "./src",
         "declaration": true,
         "outDir": "./dest",
         /* Redirect output structure to the directory. */
@@ -18,5 +17,8 @@
         "emitDecoratorMetadata": true,
         /* Enables experimental support for emitting type metadata for decorators. */
         "noStrictGenericChecks": true
-    }
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
 }

@@ -10,6 +10,7 @@ config.toCollectionName = (modelName) => {
 
 import { UserModel, User } from "./usage";
 import { User1Model, User2Model, TUser1Model, TUser2Model } from "./diffBetweenTypegoose";
+import { MyFile } from "./model/my-file";
 
 async function exampleUsage() {
     const u = new UserModel({ name: 'mongoose-ts' } /*,true *//*just for type*/);
@@ -71,20 +72,13 @@ async function example2() {
     */
 }
 
-
 async function exampleGrifFS() {
-    @setSchema()
-    class MyFile extends GridFSFile {
-        @prop({
-            default: Date.now
-        })
-        myprop: Date;
-    }
 
-    let FileModel = getGridFSModel({
+    const FileModel = getGridFSModel({
         schema: MyFile,
         modelOptions: { collection: 'files' }
     });
+
     let filename = 'index.js';
     let buffer = fs.readFileSync(path.resolve(__dirname, './' + filename))
     let rs = new FileModel({

@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import {
     Model, getModelForClass, prop, setSchema, arrayProp, setMethod, setStatic,
-    SubDocType, InstanceType
+    SubDocType, InstanceType, setPre
 } from '../lib'
 
 type ExampleInstanceType = InstanceType<Example>;
@@ -14,9 +14,16 @@ type ExampleInstanceType = InstanceType<Example>;
         }
     }
 })
+@setPre<ExampleInstanceType>('save', function (this, next) {
+    this.name += '_pre';
+    next();
+})
 export class Example extends Model<Example> {
     @prop()
     name?: string;
+
+    @prop()
+    number?: number;
 
     @arrayProp({
         type: String

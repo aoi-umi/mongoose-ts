@@ -3,3 +3,4 @@ dest
 node_modules
 package-lock.json
 _test
+.nyc_output

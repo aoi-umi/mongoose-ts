@@ -8,20 +8,27 @@
     ],
     "scripts": {
         "build": "rm -rf ./dest && tsc",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "nyc mocha"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
         "@types/mongodb": "*",
         "@types/mongoose": "*",
-        "mongoose": "*",
         "reflect-metadata": ">=0.1.12"
     },
     "devDependencies": {
-        "typegoose": "^5.4.1"
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.12.21",
+        "chai": "^4.2.0",
+        "mocha": "^6.2.2",
+        "ts-node": "^8.5.4",
+        "typegoose": "^5.4.1",
+        "typescript": "^3.7.3"
     },
-    "peerDependencies": {},
+    "peerDependencies": {
+        "mongoose": "^5.4.0"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/aoi-umi/mongoose-ts.git"
@@ -30,5 +37,21 @@
         "mongoose",
         "typescript",
         "gridfs"
-    ]
+    ],
+    "nyc": {
+        "include": [
+            "src/lib/*.ts"
+        ],
+        "extension": [
+          ".ts"
+        ],
+        "require": [
+            "ts-node/register"
+        ],
+        "reporter": [
+            "text"
+        ],
+        "instrument": true,
+        "all": true
+    }
 }
