@@ -48,16 +48,23 @@ describe('mongoose-ts', function () {
             modelOptions: { collection: 'files' }
         });
         let filename = path.resolve(__dirname, './index.ts');
+        let md5 = await util.md5File(filename);
+
         let rs1 = await upload(FileModel, filename);
         let rs2 = await upload(FileModel, filename);
 
         expect(rs1._id.toString()).to.not.equal(rs2._id.toString());
         expect(rs1.fileId.toString()).to.be.equal(rs2.fileId.toString());
 
-        let md5 = await util.md5File(filename);
         let rawFile = await FileModel.rawFindOne({ _id: rs1.fileId });
         expect(rawFile.md5).to.be.equal(md5);
 
-        await rs1.download(util.extend({ returnStream: true }, null, undefined, { test: null }));
+        let dl1 = await rs1.download(util.extend({ returnStream: true }, null, undefined, { test: null }));
+        let dl2 = await rs2.download();
+        let dl3 = await rs2.download({ ifModifiedSince: dl1.raw.uploadDate });
+
+        expect(dl3.noModified).to.be.equal(true);
+
+        await FileModel.gridfs.delete(rs1.fileId);
     });
 });

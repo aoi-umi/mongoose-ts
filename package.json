@@ -1,10 +1,11 @@
 {
     "name": "mongoose-ts-ua",
-    "version": "1.2.3",
+    "version": "1.2.5",
     "description": "mongoose with typescript",
     "main": "dest/lib/index.js",
     "files": [
-        "dest/lib"
+        "dest/lib",
+        "test"
     ],
     "scripts": {
         "build": "rm -rf ./dest && tsc",
@@ -43,13 +44,14 @@
             "src/lib/*.ts"
         ],
         "extension": [
-          ".ts"
+            ".ts"
         ],
         "require": [
             "ts-node/register"
         ],
         "reporter": [
-            "text"
+            "text",
+            "html"
         ],
         "instrument": true,
         "all": true

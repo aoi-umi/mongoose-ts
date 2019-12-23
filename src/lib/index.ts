@@ -258,7 +258,7 @@ export interface GetModelForClassOptions {
     };
     existingConnection?: mongoose.Connection;
 }
-export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
+export function getModelForClass<T extends Model<T>, typeofT, PluginType = {}>(t: { new(): T }
     , {
         existingMongoose,
         existingConnection,
@@ -289,12 +289,13 @@ export function getModelForClass<T extends Model<T>, typeofT>(t: { new(): T }
         if (newColl)
             collection = newColl;
     }
+    type PropType = T & PluginType;
     return model(name, schema, collection, modelOptions.skipInit) as
-        & mongoose.Model<InstanceType<T>>
+        & mongoose.Model<InstanceType<PropType>>
         & typeofT
         & {
             //doc with type
-            new(doc?: ModelArgsType<T>, type?: Boolean): InstanceType<T>
+            new(doc?: ModelArgsType<PropType>, type?: Boolean): InstanceType<PropType>
         };
 }
 //#endregion

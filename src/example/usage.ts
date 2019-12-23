@@ -4,14 +4,7 @@ import {
     setSchema, prop, arrayProp, setMethod, setStatic,
     setPre, setPost, setPlugin
 } from '../lib';
-
-function lastModifiedPlugin(schema: Schema) {
-    schema.add({ lastMod: Date });
-    schema.pre('save', function (this: Document & { lastMod: Date }, next) {
-        this.lastMod = new Date();
-        next();
-    });
-}
+import { lastModifiedPlugin, LastModifiedType } from './model/hooks';
 
 export type UserInstanceType = InstanceType<User>;
 export type UserModelType = ModelType<User, typeof User>;
@@ -56,4 +49,4 @@ export class User extends Model<User> {
     }
 }
 
-export const UserModel = getModelForClass<User, typeof User>(User);
+export const UserModel = getModelForClass<User, typeof User, LastModifiedType>(User); 

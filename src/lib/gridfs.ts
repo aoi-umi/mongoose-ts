@@ -23,6 +23,16 @@ export class GridFS {
         return rs[0];
     }
 
+    async delete(_id: Types.ObjectId) {
+        let defer = util.defer<void>();
+        this.gridFSBucket.delete(_id, (err) => {
+            if (err)
+                return defer.reject(err);
+            return defer.resolve();
+        });
+        return defer.promise;
+    }
+
     async download(opt: { _id: Types.ObjectId }) {
         let defer = util.defer();
         let stream = this.gridFSBucket.openDownloadStream(opt._id);
