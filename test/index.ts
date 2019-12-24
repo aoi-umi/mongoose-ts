@@ -56,8 +56,10 @@ describe('mongoose-ts', function () {
         expect(rs1._id.toString()).to.not.equal(rs2._id.toString());
         expect(rs1.fileId.toString()).to.be.equal(rs2.fileId.toString());
 
+        await FileModel.rawUpdateOne({ _id: rs1.fileId }, { $set: { test: 'test' } });
         let rawFile = await FileModel.rawFindOne({ _id: rs1.fileId });
         expect(rawFile.md5).to.be.equal(md5);
+        expect(rawFile['test']).to.be.equal('test');
 
         let dl1 = await rs1.download(util.extend({ returnStream: true }, null, undefined, { test: null }));
         let dl2 = await rs2.download();

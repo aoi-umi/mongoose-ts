@@ -1,5 +1,5 @@
 import * as mongodb from 'mongodb';
-import { GridFSBucket } from 'mongodb';
+import { GridFSBucket, Collection, ReplaceOneOptions, CommonOptions } from 'mongodb';
 import * as mongoose from 'mongoose';
 import { Types, SchemaTypes } from 'mongoose';
 import * as stream from 'stream';
@@ -8,7 +8,7 @@ import * as util from './util';
 import { InstanceType, setSchema, prop, getModelForClass, Model, GetModelForClassOptions, setMethod, setStatic } from '.';
 
 export class GridFS {
-    gridFSBucket: GridFSBucket;
+    gridFSBucket: GridFSBucket & { s?: any };
     constructor(db: mongodb.Db, options?: mongodb.GridFSBucketOptions) {
         this.gridFSBucket = new GridFSBucket(db, options);
     }
@@ -113,6 +113,8 @@ export class GridFSFile extends Model<GridFSFile>{
     static gridfs: GridFS;
     gridfs: GridFS;
 
+    static fsCollection: Collection<GridFSModel<any>>;
+
     @setStatic
     static async rawFind(cond: any) {
         let file = await this.gridfs.find(cond);
@@ -123,6 +125,16 @@ export class GridFSFile extends Model<GridFSFile>{
     static async rawFindOne(cond: any) {
         let file = await this.gridfs.findOne(cond);
         return file;
+    }
+
+    @setStatic
+    static async rawUpdateOne(cond: any, update: any, options?: ReplaceOneOptions) {
+        return this.fsCollection.updateOne(cond, update, options);
+    }
+
+    @setStatic
+    static async rawUpdateMany(cond: any, update: any, options?: CommonOptions & { upsert?: boolean }) {
+        return this.fsCollection.updateMany(cond, update, options);
     }
 
     @setMethod
@@ -185,7 +197,8 @@ export function getGridFSModel<T extends Model<T> = GridFSFile, typeofT extends 
     };
     let { schema, ...restOpt } = opt;
 
-    let GridFSModel = getModelForClass<T, typeofT>((schema || GridFSFile) as any, restOpt);
-    GridFSModel.gridfs = GridFSModel.prototype.gridfs = new GridFS(GridFSModel.db.db);
-    return GridFSModel;
+    let model = getModelForClass<T, typeofT>((schema || GridFSFile) as any, restOpt);
+    model.gridfs = model.prototype.gridfs = new GridFS(model.db.db);
+    model.fsCollection = model.gridfs.gridFSBucket.s._filesCollection;
+    return model;
 }
