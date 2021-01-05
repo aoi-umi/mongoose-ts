@@ -19,6 +19,7 @@
         "reflect-metadata": ">=0.1.12"
     },
     "devDependencies": {
+        "@types/mongoose": "5.3.23",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.12.21",
         "chai": "^4.2.0",
