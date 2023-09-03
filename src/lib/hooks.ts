@@ -1,11 +1,9 @@
 import * as mongodb from 'mongodb';
 import {
-    Document, Query, Aggregate,
-    HookSyncCallback, HookAsyncCallback, HookErrorCallback,
-    NativeError
+    Document, Query, Aggregate, Schema,
+    PreMiddlewareFunction,
 } from 'mongoose';
 import { defineSchemaMetadata, SchemaKey, Model } from '.';
-import { Schema } from 'mongoose';
 
 interface Hooks {
     /**
@@ -35,10 +33,9 @@ interface Hooks {
      */
     pre<T extends Document = Document>(
         method: "init" | "validate" | "save" | "remove",
-        fn: HookSyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
-    pre<T extends Query<any> = Query<any>>(
+    pre<T extends Query<any, any> = Query<any, any>>(
         method:
             | "count"
             | "find"
@@ -48,32 +45,27 @@ interface Hooks {
             | "update"
             | "updateOne"
             | "updateMany",
-        fn: HookSyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
     pre<T extends Aggregate<any> = Aggregate<any>>(
         method: "aggregate",
-        fn: HookSyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
     pre<T extends Model<Document> = Model<Document>>(
         method: "insertMany",
-        fn: HookSyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
-    pre<T extends Document | Model<Document> | Query<any> | Aggregate<any>>(
+    pre<T extends Document | Model<Document> | Query<any, any> | Aggregate<any>>(
         method: string,
-        fn: HookSyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
 
     pre<T extends Document = Document>(
         method: "init" | "validate" | "save" | "remove",
         parallel: boolean,
-        fn: HookAsyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
-    pre<T extends Query<any> = Query<any>>(
+    pre<T extends Query<any, any> = Query<any, any>>(
         method:
             | "count"
             | "find"
@@ -84,26 +76,22 @@ interface Hooks {
             | "updateOne"
             | "updateMany",
         parallel: boolean,
-        fn: HookAsyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
     pre<T extends Aggregate<any> = Aggregate<any>>(
         method: "aggregate",
         parallel: boolean,
-        fn: HookAsyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
     pre<T extends Model<Document> = Model<Document>>(
         method: "insertMany",
         parallel: boolean,
-        fn: HookAsyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
-    pre<T extends Document | Model<Document> | Query<any> | Aggregate<any>>(
+    pre<T extends Document | Model<Document> | Query<any, any> | Aggregate<any>>(
         method: string,
         parallel: boolean,
-        fn: HookAsyncCallback<T>,
-        errorCb?: HookErrorCallback
+        fn: PreMiddlewareFunction<T>
     ): ClassDecorator;
 }
 

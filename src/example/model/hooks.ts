@@ -1,4 +1,4 @@
-import { DocumentQuery, Schema, Document, connect } from 'mongoose';
+import { Schema, Document, connect } from 'mongoose';
 
 export type LastModifiedType = { lastMod: Date };
 export function lastModifiedPlugin(schema: Schema) {

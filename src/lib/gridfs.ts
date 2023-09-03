@@ -1,11 +1,10 @@
 import * as mongodb from 'mongodb';
-import { GridFSBucket, Collection, ReplaceOneOptions, CommonOptions } from 'mongodb';
-import * as mongoose from 'mongoose';
+import { GridFSBucket, Collection, ReplaceOptions, UpdateOptions } from 'mongodb';
 import { Types, SchemaTypes } from 'mongoose';
 import * as stream from 'stream';
 
 import * as util from './util';
-import { InstanceType, setSchema, prop, getModelForClass, Model, GetModelForClassOptions, setMethod, setStatic } from '.';
+import { setSchema, prop, getModelForClass, Model, GetModelForClassOptions, setMethod, setStatic } from '.';
 
 export class GridFS {
     gridFSBucket: GridFSBucket & { s?: any };
@@ -13,9 +12,9 @@ export class GridFS {
         this.gridFSBucket = new GridFSBucket(db, options);
     }
 
-    async find<T = any>(filter?: object, options?: mongodb.GridFSBucketFindOptions) {
+    async find<T = any>(filter?: object, options?: mongodb.FindOptions) {
         let rs = await this.gridFSBucket.find(filter, options).toArray();
-        return rs as GridFSInstance<T>[];
+        return rs as any as GridFSInstance<T>[];
     }
 
     async findOne<T = any>(filter?: object) {
@@ -24,13 +23,7 @@ export class GridFS {
     }
 
     async delete(_id: Types.ObjectId) {
-        let defer = util.defer<void>();
-        this.gridFSBucket.delete(_id, (err) => {
-            if (err)
-                return defer.reject(err);
-            return defer.resolve();
-        });
-        return defer.promise;
+        return await this.gridFSBucket.delete(_id);
     }
 
     async download(opt: { _id: Types.ObjectId }) {
@@ -47,7 +40,7 @@ export class GridFS {
         return defer.promise;
     }
 
-    async upload(opt: { _id?: Types.ObjectId; buffer: Buffer, filename?: string; metadata?: any; contentType?: string }) {
+    async upload(opt: { _id?: Types.ObjectId; buffer: Buffer, md5: string, filename?: string; metadata?: any; contentType?: string }) {
         let defer = util.defer<{ _id: Types.ObjectId }>();
         let readstream = new stream.PassThrough();
         let _id = opt._id;
@@ -56,18 +49,23 @@ export class GridFS {
         let writeStream: mongodb.GridFSBucketWriteStream;
         let options = {
             metadata: opt.metadata,
-            contentType: opt.contentType
+            contentType: opt.contentType,
         };
         if (_id) {
             writeStream = this.gridFSBucket.openUploadStreamWithId(_id, opt.filename, options);
         } else {
             writeStream = this.gridFSBucket.openUploadStream(opt.filename, options);
-            _id = Types.ObjectId(writeStream.id as any);
+            _id = new Types.ObjectId(writeStream.id as any);
         }
-        writeStream.on('finish', function () {
-            defer.resolve({
-                _id
-            });
+        writeStream.on('finish', async function () {
+            try {
+                await writeStream.files.updateOne({ _id }, { $set: { md5: opt.md5 }});
+                defer.resolve({
+                    _id
+                });
+            } catch(err) {
+                defer.reject(err);
+            }
         }).on('error', function (err) {
             defer.reject(err);
         });
@@ -128,12 +126,12 @@ export class GridFSFile extends Model<GridFSFile>{
     }
 
     @setStatic
-    static async rawUpdateOne(cond: any, update: any, options?: ReplaceOneOptions) {
+    static async rawUpdateOne(cond: any, update: any, options?: ReplaceOptions) {
         return this.fsCollection.updateOne(cond, update, options);
     }
 
     @setStatic
-    static async rawUpdateMany(cond: any, update: any, options?: CommonOptions & { upsert?: boolean }) {
+    static async rawUpdateMany(cond: any, update: any, options?: UpdateOptions) {
         return this.fsCollection.updateMany(cond, update, options);
     }
 
@@ -183,7 +181,7 @@ export class GridFSFile extends Model<GridFSFile>{
         if (matchFile) {
             this.fileId = matchFile._id;
         } else {
-            let dbfile = await this.gridfs.upload({ buffer: opt.buffer, contentType: opt.contentType });
+            let dbfile = await this.gridfs.upload({ md5, buffer: opt.buffer, contentType: opt.contentType || "application/octet-stream" });
             this.fileId = dbfile._id;
         }
         let rs = await this.save();
@@ -191,14 +189,14 @@ export class GridFSFile extends Model<GridFSFile>{
     }
 }
 
-export function getGridFSModel<T extends Model<T> = GridFSFile, typeofT extends typeof GridFSFile = typeof GridFSFile>(opt?: GetModelForClassOptions & { schema?: { new(): T } }) {
+export function getGridFSModel<T extends Model<T> = GridFSFile, typeofT extends typeof GridFSFile = typeof GridFSFile>(opt?: GetModelForClassOptions & { schema?: { new(): any } }) {
     opt = {
         ...opt
     };
     let { schema, ...restOpt } = opt;
 
     let model = getModelForClass<T, typeofT>((schema || GridFSFile) as any, restOpt);
-    model.gridfs = model.prototype.gridfs = new GridFS(model.db.db);
+    model.gridfs = model.prototype.gridfs = new GridFS(model.db.db as any);
     model.fsCollection = model.gridfs.gridFSBucket.s._filesCollection;
     return model;
 }

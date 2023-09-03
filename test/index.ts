@@ -10,7 +10,7 @@ import { ExampleModel } from '../src/example/example';
 import { MyFile } from '../src/example/model/my-file';
 
 async function connectDb() {
-    await connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
+    await connect('mongodb://127.0.0.1:27017/test', {});
 }
 
 async function disconnect() {
@@ -25,6 +25,7 @@ async function upload(FileModel, filename) {
     let upload = await rs.upload({
         buffer
     });
+    // @ts-ignore
     return rs as InstanceType<MyFile>;
 }
 
@@ -53,7 +54,7 @@ describe('mongoose-ts', function () {
         let rs1 = await upload(FileModel, filename);
         let rs2 = await upload(FileModel, filename);
 
-        expect(rs1._id.toString()).to.not.equal(rs2._id.toString());
+        expect(rs1._id?.toString()).to.not.equal(rs2._id?.toString());
         expect(rs1.fileId.toString()).to.be.equal(rs2.fileId.toString());
 
         await FileModel.rawUpdateOne({ _id: rs1.fileId }, { $set: { test: 'test' } });
@@ -63,9 +64,9 @@ describe('mongoose-ts', function () {
 
         let dl1 = await rs1.download(util.extend({ returnStream: true }, null, undefined, { test: null }));
         let dl2 = await rs2.download();
-        let dl3 = await rs2.download({ ifModifiedSince: dl1.raw.uploadDate });
+        let dl3 = await rs2.download({ ifModifiedSince: dl1?.raw.uploadDate });
 
-        expect(dl3.noModified).to.be.equal(true);
+        expect(dl3?.noModified).to.be.equal(true);
 
         await FileModel.gridfs.delete(rs1.fileId);
     });

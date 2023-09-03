@@ -1,4 +1,4 @@
-import { DocumentQuery, Schema, Document, connect } from 'mongoose';
+import { Schema, Document, connect } from 'mongoose';
 import {
     Model, getModelForClass, ModelType, DocType, InstanceType, Ref,
     setSchema, prop, arrayProp, setMethod, setStatic,
@@ -8,8 +8,7 @@ import { lastModifiedPlugin, LastModifiedType } from './model/hooks';
 
 export type UserInstanceType = InstanceType<User>;
 export type UserModelType = ModelType<User, typeof User>;
-export type UserDocType = DocType<User, { method1 }>;//omit method1
-
+// export type UserDocType = DocType<User, { method1 }>;//omit method1
 @setSchema({
     schemaOptions: {
         timestamps: true,

@@ -1,14 +1,15 @@
+
 import 'reflect-metadata';
 import * as mongoose from 'mongoose';
-import { Types, Mongoose, ConnectionOptions, SchemaTypeOpts, Schema, SchemaType, SchemaOptions } from 'mongoose';
-import { Omit, RecursivePartial } from './types';
-
+import { Types, SchemaTypeOptions, Schema, SchemaOptions, Document } from 'mongoose';
+import { DocType, InstanceType, ModelArgsType, DefaultInstance, _Model } from './types';
+export type * from './types'
 import * as hooks from './hooks';
 
 //#region schema
 
-export interface PropOptions<T> extends SchemaTypeOpts<T> {
-    ref?: any;
+export interface PropOptions<T> extends SchemaTypeOptions<T> {
+    items?: any;
 }
 
 export interface ArrayPropOptions extends PropOptions<any> {
@@ -208,38 +209,17 @@ export let getSchema = function <TFunction extends Function>(model: TFunction) {
 }
 //#endregion
 
-type DefaultInstance = mongoose.Document;
-export declare type InstanceType<T> = T & mongoose.Document;
-export declare type ModelType<T, typeofT> = mongoose.Model<InstanceType<T>> & typeofT;
-export declare type DocType<T extends DefaultInstance, U = {}> = FilteredModelAttributes<T & U, U>;
-export declare type SubDocType<T> = Types.Subdocument & T;
-export declare type Ref<T> = T | Types.ObjectId;
-export declare type ModelArgsType<T extends DefaultInstance, U = {}> = FilteredModelAttributesArgs<T & U, U>;
-
-type BaseDoc = {
-    _id?: Types.ObjectId;
-    id?: string;
+interface ModelConstructor extends _Model<any> {
+    // new <T = any>(value?: any): Document<T>;
 }
-export type FilteredModelAttributes<T extends DefaultInstance & U, U> =
-    Partial<Omit<T, keyof (DefaultInstance & U)>> & BaseDoc;
-
-export type FilteredModelAttributesArgs<T extends DefaultInstance & U, U> =
-    RecursivePartial<Omit<T, keyof (DefaultInstance & U)>> & BaseDoc;
-
-declare module "mongoose" {
-    interface Document {
-        _doc: DocType<this, any>;
-    }
-}
-interface _Model<T> extends mongoose.Model<InstanceType<T>> {
-}
-declare var _Model1: <T>(t?: T) => _Model<T>;
-exports.Model = class { };
-export declare class Model<T, DocOmit = {}> extends _Model1() {
+declare var Model1: ModelConstructor;
+export declare class Model<T, DocOmit = {}> extends Model1 {
     createdAt?: Date;
     updatedAt?: Date;
     _doc: DocType<InstanceType<T>, DocOmit>;
 }
+
+exports.Model = class { };
 
 export let config: {
     existingMongoose?: mongoose.Mongoose;
@@ -254,7 +234,7 @@ export interface GetModelForClassOptions {
     modelOptions?: {
         name?: string;
         collection?: string;
-        skipInit?: boolean;
+        options?: mongoose.CompileModelOptions;
     };
     existingConnection?: mongoose.Connection;
 }
@@ -290,12 +270,13 @@ export function getModelForClass<T extends Model<T>, typeofT, PluginType = {}>(t
             collection = newColl;
     }
     type PropType = T & PluginType;
-    return model(name, schema, collection, modelOptions.skipInit) as
+    // @ts-ignore
+    return model(name, schema, collection, modelOptions.options) as
         & mongoose.Model<InstanceType<PropType>>
         & typeofT
         & {
             //doc with type
-            new(doc?: ModelArgsType<PropType>, type?: Boolean): InstanceType<PropType>
+            new(doc?: ModelArgsType<DefaultInstance>, type?: Boolean): InstanceType<PropType>
         };
 }
 //#endregion

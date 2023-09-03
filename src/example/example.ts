@@ -10,7 +10,7 @@ type ExampleInstanceType = InstanceType<Example>;
 @setSchema({
     schemaOptions: {
         toJSON: {
-            transform: (doc: ExampleInstanceType, ret) => {
+            transform: (doc, ret, options) => {
                 return ret;
             }
         }

@@ -15,21 +15,19 @@
     "license": "ISC",
     "dependencies": {
         "@types/mongodb": "*",
-        "@types/mongoose": "*",
         "reflect-metadata": ">=0.1.12"
     },
     "devDependencies": {
-        "@types/mongoose": "5.3.23",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.12.21",
         "chai": "^4.2.0",
         "mocha": "^6.2.2",
         "ts-node": "^8.5.4",
-        "typegoose": "^5.4.1",
-        "typescript": "^3.7.3"
+        "typescript": "^5.2.2"
     },
     "peerDependencies": {
-        "mongoose": "^5.4.0"
+        "mongodb": "^5.0.0",
+        "mongoose": "^7.0.0"
     },
     "repository": {
         "type": "git",
