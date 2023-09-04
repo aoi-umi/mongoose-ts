@@ -17,10 +17,19 @@ async function exampleUsage() {
     const user = await UserModel.findOne().sort({ _id: -1 });
 
     //UserDocType
-    //u._doc
+    // check type
+    if (false) {
+        u._doc
+        u.name
+        u.method1
+    }
 
     console.log(user);
-    user.method1();
+    if (false) {
+        user._doc;
+        user.name;
+        user.method1;
+    }
     UserModel.static1();
     /* output
     save, _id:  5bc55f27190f2129d80d26ab

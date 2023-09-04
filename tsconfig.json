@@ -17,9 +17,13 @@
         "emitDecoratorMetadata": true,
         "ignoreDeprecations": "5.0",
         /* Enables experimental support for emitting type metadata for decorators. */
-        "noStrictGenericChecks": true
+        "noStrictGenericChecks": true,
+        "paths": {
+            "*": ["./types/*"]
+        }
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts", 
+        "types/**/*",
     ]
 }

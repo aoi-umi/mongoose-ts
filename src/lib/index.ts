@@ -1,9 +1,8 @@
-
 import 'reflect-metadata';
 import * as mongoose from 'mongoose';
 import { Types, SchemaTypeOptions, Schema, SchemaOptions, Document } from 'mongoose';
 import { DocType, InstanceType, ModelArgsType, DefaultInstance, _Model } from './types';
-export type * from './types'
+export * from './types'
 import * as hooks from './hooks';
 
 //#region schema
@@ -209,11 +208,8 @@ export let getSchema = function <TFunction extends Function>(model: TFunction) {
 }
 //#endregion
 
-interface ModelConstructor extends _Model<any> {
-    // new <T = any>(value?: any): Document<T>;
-}
-declare var Model1: ModelConstructor;
-export declare class Model<T, DocOmit = {}> extends Model1 {
+declare var _Model1: <T>(t?: T) => _Model<T>;
+export declare class Model<T, DocOmit = {}> extends _Model1() {
     createdAt?: Date;
     updatedAt?: Date;
     _doc: DocType<InstanceType<T>, DocOmit>;
@@ -270,8 +266,7 @@ export function getModelForClass<T extends Model<T>, typeofT, PluginType = {}>(t
             collection = newColl;
     }
     type PropType = T & PluginType;
-    // @ts-ignore
-    return model(name, schema, collection, modelOptions.options) as
+    return model(name, schema, collection, modelOptions.options) as any as
         & mongoose.Model<InstanceType<PropType>>
         & typeofT
         & {

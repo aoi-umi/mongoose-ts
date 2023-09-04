@@ -7,12 +7,12 @@ declare module "mongoose" {
     }
 }
 
-export interface _Model<T> extends mongoose.Model<InstanceType<T>> {
+export interface _Model<T> extends mongoose.Model<T> {
 }
 
-type DefaultInstance = mongoose.Document;
-export declare type InstanceType<T> = T & mongoose.Document<T>;
-export declare type ModelType<T, typeofT> = mongoose.Model<InstanceType<T>> & typeofT;
+export type DefaultInstance = mongoose.Document;
+export declare type InstanceType<T> = T & mongoose.Document;
+export declare type ModelType<T, typeofT> = mongoose.Model<{}, {}, {}, {}, InstanceType<T>> & typeofT;
 export declare type DocType<T extends DefaultInstance, U = {}> = FilteredModelAttributes<T & U, U>;
 export declare type SubDocType<T> = Types.Subdocument & T;
 export declare type Ref<T> = T | Types.ObjectId;
