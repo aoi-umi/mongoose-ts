@@ -1,6 +1,6 @@
 {
     "name": "mongoose-ts-ua",
-    "version": "1.2.5",
+    "version": "2.0.2",
     "description": "mongoose with typescript",
     "main": "dest/lib/index.js",
     "files": [
@@ -14,22 +14,17 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@types/mongodb": "*",
-        "@types/mongoose": "*",
-        "reflect-metadata": ">=0.1.12"
+        "reflect-metadata": ">=0.1.12",
+        "mongoose": "^7.0.0"
     },
     "devDependencies": {
-        "@types/mongoose": "5.3.23",
+        "@types/mongodb": "*",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.12.21",
         "chai": "^4.2.0",
         "mocha": "^6.2.2",
         "ts-node": "^8.5.4",
-        "typegoose": "^5.4.1",
-        "typescript": "^3.7.3"
-    },
-    "peerDependencies": {
-        "mongoose": "^5.4.0"
+        "typescript": "^5.2.2"
     },
     "repository": {
         "type": "git",

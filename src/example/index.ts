@@ -9,7 +9,6 @@ config.toCollectionName = (modelName) => {
 };
 
 import { UserModel, User } from "./usage";
-import { User1Model, User2Model, TUser1Model, TUser2Model } from "./diffBetweenTypegoose";
 import { MyFile } from "./model/my-file";
 
 async function exampleUsage() {
@@ -18,10 +17,19 @@ async function exampleUsage() {
     const user = await UserModel.findOne().sort({ _id: -1 });
 
     //UserDocType
-    //u._doc
+    // check type
+    if (false) {
+        u._doc
+        u.name
+        u.method1
+    }
 
     console.log(user);
-    user.method1();
+    if (false) {
+        user._doc;
+        user.name;
+        user.method1;
+    }
     UserModel.static1();
     /* output
     save, _id:  5bc55f27190f2129d80d26ab
@@ -38,40 +46,6 @@ async function exampleUsage() {
     */
 }
 
-async function example2() {
-    console.log('TUser1');
-    new TUser1Model().method1();
-    console.log('User1');
-    new User1Model().method1();
-    console.log('---------------------');
-    let tu2 = new TUser2Model({ child: { name: 'tu1' } });
-    let u2 = new User2Model({ child: { name: 'u1' } }, true);
-    console.log('TUser2');
-    tu2.method1();
-    console.log('User2');
-    u2.method1();
-    console.log('---------------------');
-    console.log('TUser2', (tu2.child.method1 ? '' : 'no ') + 'method1');
-    tu2.child.method1 && tu2.child.method1();
-    console.log('User2', (u2.child.method1 ? '' : 'no ') + 'method1');
-    u2.child.method1 && u2.child.method1();
-    /*output
-    TUser1
-    method1, user1
-    User1
-    method1, user1
-    ---------------------
-    TUser2
-    method1, user1
-    User2
-    this is method1,save
-    ---------------------
-    TUser2 no method1
-    User2 method1
-    method1, user1
-    */
-}
-
 async function exampleGrifFS() {
 
     const FileModel = getGridFSModel({
@@ -79,8 +53,8 @@ async function exampleGrifFS() {
         modelOptions: { collection: 'files' }
     });
 
-    let filename = 'index.js';
-    let buffer = fs.readFileSync(path.resolve(__dirname, './' + filename))
+    let filename = 'readme.md';
+    let buffer = fs.readFileSync(path.resolve(__dirname, '../../' + filename))
     let rs = new FileModel({
         filename
     });
@@ -104,7 +78,7 @@ async function exampleGrifFS() {
 }
 
 (async () => {
-    await connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
+    await connect('mongodb://127.0.0.1:27017/test', {});
     //let schema = getSchema(User);
     //console.log(new UserModel());
     await exampleGrifFS();
