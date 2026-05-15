@@ -15,7 +15,7 @@
     "license": "ISC",
     "dependencies": {
         "reflect-metadata": ">=0.1.12",
-        "mongoose": "^7.0.0"
+        "mongoose": "^8.22.1"
     },
     "devDependencies": {
         "@types/mongodb": "*",
